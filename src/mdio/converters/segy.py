@@ -107,7 +107,7 @@ def segy_to_mdio(
     index_types: Sequence[str] | None = None,
     chunksize: Sequence[int] | None = None,
     endian: str = "big",
-    lossless: bool = True,
+    compression: str = "none",
     compression_tolerance: float = 0.01,
     storage_options: dict[str, Any] | None = None,
     overwrite: bool = False,
@@ -442,7 +442,7 @@ def segy_to_mdio(
         name="_".join(["chunked", suffix]),
         dtype="float32",
         chunks=chunksize,
-        lossless=lossless,
+        compression=compression,
         compression_tolerance=compression_tolerance,
     )
 

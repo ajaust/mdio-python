@@ -47,7 +47,7 @@ def to_zarr(
     metadata_root: Group,
     name: str,
     chunks: tuple[int, ...],
-    lossless: bool,
+    compression: str,
     compression_tolerance: float = 0.01,
     **kwargs,
 ) -> dict:
@@ -74,10 +74,16 @@ def to_zarr(
     Raises:
         ImportError: if the ZFP isn't installed and user requests lossy.
     """
-    if lossless is True:
+    if compression.lower() == "none":
+        trace_compressor = None
+        header_compressor = None
+    elif compression.lower() == "zstd":
         trace_compressor = Blosc("zstd")
         header_compressor = trace_compressor
-    elif ZFPY is not None or zfpy is not None:
+    elif compression.lower() == "lz4":
+        trace_compressor = Blosc("lz4")
+        header_compressor = trace_compressor
+    elif compression.lower() == "zfp" and (ZFPY is not None or zfpy is not None):
         trace_compressor = ZFPY(
             mode=zfpy.mode_fixed_accuracy,
             tolerance=compression_tolerance,

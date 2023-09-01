@@ -114,12 +114,12 @@ cli = click.Group(name="segy", help=SEGY_HELP)
     show_choices=True,
 )
 @click.option(
-    "-lossless",
-    "--lossless",
-    required=False,
-    default=True,
-    help="Toggle lossless, and perceptually lossless compression",
-    type=click.BOOL,
+    "-compression",
+    "--compression",
+    required=True,
+    default="None",
+    help="Choose compression algorithm. zstd, and lz4 are used in conjunction with Blosc",
+    type=click.Choice(["none", "zstd", "lz4", "zfp"]),
     show_default=True,
 )
 @click.option(
@@ -127,7 +127,7 @@ cli = click.Group(name="segy", help=SEGY_HELP)
     "--compression-tolerance",
     required=False,
     default=0.01,
-    help="Lossy compression tolerance in ZFP.",
+    help="Lossy compression tolerance if ZFP compression is used.",
     type=click.FLOAT,
     show_default=True,
 )
@@ -162,7 +162,7 @@ def segy_import(
     header_names,
     chunk_size,
     endian,
-    lossless,
+    compression,
     compression_tolerance,
     storage_options,
     overwrite,
@@ -364,7 +364,7 @@ def segy_import(
         index_names=header_names,
         chunksize=chunk_size,
         endian=endian,
-        lossless=lossless,
+        compression=compression,
         compression_tolerance=compression_tolerance,
         storage_options=storage_options,
         overwrite=overwrite,
