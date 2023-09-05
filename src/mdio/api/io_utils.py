@@ -6,6 +6,8 @@ from __future__ import annotations
 from typing import Any
 
 import dask.array as da
+from dask.distributed import performance_report
+
 import zarr
 from zarr.storage import FSStore
 
@@ -138,4 +140,5 @@ def open_zarr_array_dask(group_handle: zarr.Group, name: str, **kwargs) -> da.Ar
         Zarr array opened with Dask engine.
     """
     zarr_array = open_zarr_array(group_handle=group_handle, name=name)
-    return da.from_array(zarr_array, **kwargs, inline_array=True)
+    with performance_report(filename="dask-report.html"):
+        return da.from_array(zarr_array, **kwargs, inline_array=True)
